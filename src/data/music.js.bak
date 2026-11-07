@@ -1,0 +1,66 @@
+import { useEffect, useRef, useState } from "react";
+export default function Reveal({ as: Tag = "div", delay = 0, className = "", style, children, ...rest }) {
+  const ref = useRef(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    if (typeof IntersectionObserver === "undefined") {
+      setShown(true);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShown(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -5% 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <Tag
+      ref={ref}
+      className={`reveal${shown ? " is-visible" : ""}${className ? ` ${className}` : ""}`}
+      style={{ "--reveal-delay": `${delay}ms`, ...style }}
+      {...rest}
+    >
+      {children}
+    </Tag>
+  );
+}
+export const musicIntro = {
+  title: "a song for this little moment",
+  text: "Tekan play kapan pun kamu siap. Tidak ada lagu yang berputar sendiri.",
+  moreTitle: "songs that remind me of you",
+  handNote: "volume secukupnya",
+};
+
+export const tracks = [
+  {
+    id: 1,
+    title: "",
+    artist: "",
+    note: "",
+    spotifyUrl: "",
+  },
+  {
+    id: 2,
+    title: "",
+    artist: "",
+    note: "",
+    spotifyUrl: "",
+  },
+  {
+    id: 3,
+    title: "",
+    artist: "",
+    note: "",
+    spotifyUrl: "",
+  },
+];
